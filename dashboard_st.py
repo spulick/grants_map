@@ -20,11 +20,11 @@ st.set_page_config(
 
 @st.cache_data
 def read_map():
-    return gpd.read_file("./Data/Training Data/Grants Councils.geojson")
+    return gpd.read_file("./Data/Working Data/Grants Councils.geojson")
 
 @st.cache_data
 def read_uninc():
-    return gpd.read_file("./Data/Training Data/Unincorp.geojson")
+    return gpd.read_file("./Data/Working Data/Unincorp.geojson")
 
 grants = read_map()
 uninc = read_uninc()

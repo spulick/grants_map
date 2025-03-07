@@ -20,7 +20,7 @@ councils = grants[grants["Recipient Name"].str.contains(r"council|shire|city", c
 
 print("Finding LGAs...")
 
-lgas = pd.read_csv("../Data/Training Data/ALGA Mail List.csv", encoding='latin1')
+lgas = pd.read_csv("../Data/Working Data/ALGA Mail List.csv", encoding='latin1')
 council_names = lgas["COUNCIL"].dropna().to_list()
 
 from thefuzz import process
@@ -111,4 +111,4 @@ councils = councils[councils["Assigned LGA"] != "Delete"]
 
 #councils["Assigned LGA"] = councils["Assigned LGA"].apply(lambda x: x.)
 
-councils.to_csv("../Data/Training Data/Grants Councils.csv", index=False)
+councils.to_csv("../Data/Working Data/Grants Councils.csv", index=False)
