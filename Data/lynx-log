@@ -1,0 +1,12 @@
+# Command logfile created by Lynx 2.9.0 (15 Jan 2024)
+# Arg0 = lynx
+# Arg1 = -cmd_log=/tmp/lynx-log
+# Arg2 = --useragent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:100.0) Gecko/20100101 Firefox/100.0
+# Arg3 = https://www.grants.gov.au/Reports/GaWeeklyExportDownload?GaWeeklyExportUuid=a257d7c8-bd40-4c78-8e9e-20699e880256
+key y
+key d
+key Down Arrow
+key Right Arrow
+key ^J
+key q
+key <space>
