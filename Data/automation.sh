@@ -20,3 +20,10 @@ cd ./Data
 rm "Grants_Councils_latest.csv"
 
 find ./ -name '*.xlsx' -exec sh -c "mv {} './Archive/'" \;
+
+# Push to GitHub
+
+cd ../
+
+
+git push origin main
