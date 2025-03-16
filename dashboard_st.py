@@ -27,6 +27,7 @@ def read_uninc():
     return gpd.read_file("./Data/Working Data/Unincorp.geojson")
 
 grants = read_map()
+
 uninc = read_uninc()
 
 dates = grants["Approval Date"].unique()
@@ -64,7 +65,11 @@ def plot_map():
     m = temp.explore(
          column = "Value (AUD)",
          m = m,
-         cmap = colormap
+         cmap = colormap,
+         tooltip_kwds={
+              #"fields": ["Assigned LGA", "Value (AUD)"],
+              "aliases": ["Local Government Area", "Total Grant Value ($'000)"]              
+         }
     )
 
     uninc_layer = folium.GeoJson(
@@ -144,4 +149,6 @@ else:
 
 
     with st.expander("Detailed Dataset"):
-        st.dataframe(filtered.reset_index(drop=True))
+        st.dataframe(filtered[['Agency', 'Value (AUD)', 'Parent GA ID',
+                                        'GA ID', 'GO ID', 'Status', 'Grant Program', 'Approval Date', 'Start Date', 'End Date', 'Variation Value (AUD)',
+                                        'One-off/Ad hoc', 'Selection Process', 'Category']].reset_index(drop=True))

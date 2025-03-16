@@ -25,5 +25,8 @@ find ./ -name '*.xlsx' -exec sh -c "mv {} './Archive/'" \;
 
 cd ../
 
+git add "Data/Working Data/Grants Councils.geojson" "Data/automation.sh" "Data/uuid_urls.txt"
+
+git commit -m "Ran automated data builder"
 
 git push origin main
