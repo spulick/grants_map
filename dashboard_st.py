@@ -111,7 +111,7 @@ with st.sidebar:
     start_date, end_date = st.select_slider("Approval Date", options=dates, value=(dates[0], dates[-1]))
 
 
-    st.markdown("Compiled from GrantConnect data.")
+    st.markdown("Compiled from data released by GrantConnect under a Creative Commons license [(CC BY 3.0 AU)](https://creativecommons.org/licenses/by/3.0/au/deed.en).")
     st.info("""
     - GrantConnect materials are released by the Department of Finance
     - GrantConnect materials are subject to change and should be verified on the GrantConnect website to ensure the information is up to date and correct: www.grants.gov.au
