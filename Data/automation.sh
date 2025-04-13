@@ -19,7 +19,7 @@ cd ./Data
 
 rm "Grants_Councils_latest.csv"
 
-find ./ -maxdepth 1 -name './GrantConnect*.xlsx' -exec sh -c "mv {} './Archive/'" \;
+find ./ -maxdepth 1 -wholename './GrantConnect*.xlsx' -exec sh -c "mv {} './Archive/'" \;
 
 # Push to GitHub
 
