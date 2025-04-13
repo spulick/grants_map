@@ -45,7 +45,7 @@ map, filt = st.columns([5, 4], border=True)
 
 # Define functions
 
-def plot_map():
+def plot_map(filtered):
     m = folium.Map(location = [-25.947028, 133.209639], tiles="CartoDB.Voyager", zoom_start=4.2)
 
     temp = gpd.GeoDataFrame(filtered.groupby(["Assigned LGA", "geometry"]).agg({"Value (AUD)": "sum"}).reset_index())
@@ -129,7 +129,7 @@ if len(filtered) == 0:
                 st.error("No data available for the selected filters.")
 
 else:
-    m = plot_map()
+    m = plot_map(filtered)
 
     with map:
         lga = st_folium(m, use_container_width=True, return_on_hover=False, returned_objects = ["last_active_drawing"])["last_active_drawing"]
@@ -149,6 +149,6 @@ else:
 
 
     with st.expander("Detailed Dataset"):
-        st.dataframe(filtered[['Agency', 'Value (AUD)', 'Parent GA ID',
+        st.dataframe(filtered[['Agency', 'Value (AUD)', 'Parent GA ID', 'Assigned LGA',
                                         'GA ID', 'GO ID', 'Status', 'Grant Program', 'Approval Date', 'Start Date', 'End Date', 'Variation Value (AUD)',
                                         'One-off/Ad hoc', 'Selection Process', 'Category']].reset_index(drop=True))
