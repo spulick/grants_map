@@ -12,23 +12,42 @@ print("Cleaning data...")
 
 grants = grants[grants["Agency"] != "Australian Securities and Investments Commission"]
 
-removal_tags = r"service|care| inc|learning|incorporated|business|technologies|national|company|school|health|pty|ltd|intl|international|college|institute|local|university|church|uca |arts |private|limited|trust|hospital|aboriginal corporat| lands* council|association|centre|federation|australia|community|cancer"
+removal_tags = r"mission|service|care| inc|learning|incorporated|business|technologies|national|company|school|health|pty|ltd|intl|international|college|institute|local|university|church|uca |arts |private|limited|trust|hospital|aboriginal corporat| lands* council|association|centre|federation|australia|community|cancer"
 
 grants = grants[~grants["Recipient Name"].str.contains(removal_tags, case=False, na=True)]
 
 councils = grants[grants["Recipient Name"].str.contains(r"council|shire|city", case=False, na=True)]
 
+councils.loc[councils["Recipient Name"].str.lower.contains(r"central coast"), "Recipient Name"] = councils[councils["Recipient Name"].str.contains(r"central coast")]["Recipient Name"] + " (" + councils[councils["Recipient Name"].str.contains(r"central coast")]["Recipient State/Territory"] + ")"
+councils.loc[councils["Recipient Name"].str.lower().str.contains(r"campbelltown"), "Recipient Name"] = councils[councils["Recipient Name"].str.lower().str.contains(r"campbelltown")]["Recipient Name"] + " (" + councils[councils["Recipient Name"].str.lower().str.contains(r"campbelltown")]["Recipient State/Territory"] + ")"
+
+
 print("Finding LGAs...")
 
 lgas = pd.read_csv("./Data/Working Data/ALGA Mail List.csv", encoding='latin1')
+
+lgas["STATE"].replace({"TAS": "Tas."}, inplace=True)
+
+lgas.loc[lgas["COUNCIL"] == "Central Coast Council", "COUNCIL"] = lgas[lgas["COUNCIL"] == "Central Coast Council"]["COUNCIL"] + " (" + lgas[lgas['COUNCIL'] == 'Central Coast Council']['STATE'] + ")"
+lgas.loc[lgas["COUNCIL"] == "Campbelltown City Council", "COUNCIL"] = lgas[lgas["COUNCIL"] == "Campbelltown City Council"]["COUNCIL"] + " (" + lgas[lgas['COUNCIL'] == 'Campbelltown City Council']['STATE'] + ")"
+
 council_names = lgas["COUNCIL"].dropna().to_list()
 
 from thefuzz import process
 from thefuzz import fuzz
 
 def similarity(name):
-    tup = process.extractOne(name, council_names, scorer=fuzz.partial_ratio, score_cutoff=100)
-    return tup[0] if tup else None
+    tup = process.extract(name, council_names, scorer=fuzz.partial_ratio)#, score_cutoff=100)
+
+    if tup:
+        tup = [sub for sub in tup if sub[1] == 100]
+
+        if len(tup) == 1:
+            return tup[0][0]
+        else:
+            return None
+    else:
+        return None
 
 councils["Assigned LGA"] = councils["Recipient Name"].str.lower().apply(similarity)
 

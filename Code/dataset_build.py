@@ -2,7 +2,7 @@ import pandas as pd
 import glob
 from pprint import pprint
 
-files = glob.glob('../Data/Grants Archive/GrantConnect*.xlsx')
+files = glob.glob('../Data/Archive/GrantConnect*.xlsx')
 
 print("Reading files...")
 
@@ -12,23 +12,41 @@ print("Cleaning data...")
 
 grants = grants[grants["Agency"] != "Australian Securities and Investments Commission"]
 
-removal_tags = r"service|care| inc|incorporated|business|technologies|national|company|school|health|pty|ltd|intl|international|college|institute|local|university|church|uca |arts |private|limited|trust|hospital|aboriginal corporat| lands* council|association|centre|federation|australia|community|cancer"
+removal_tags = r"mission|service| care| inc|incorporated|business|technologies|national|company|school|health|pty|ltd|intl|international|college|institute|local|university|church|uca |arts |private|limited|trust|hospital|aboriginal corporat| lands* council|association|centre|federation|australia|community|cancer"
 
 grants = grants[~grants["Recipient Name"].str.contains(removal_tags, case=False, na=True)]
 
 councils = grants[grants["Recipient Name"].str.contains(r"council|shire|city", case=False, na=True)]
 
+councils.loc[councils["Recipient Name"].str.lower().str.contains(r"central coast"), "Recipient Name"] = councils[councils["Recipient Name"].str.lower().str.contains(r"central coast")]["Recipient Name"] + " (" + councils[councils["Recipient Name"].str.lower().str.contains(r"central coast")]["Recipient State/Territory"] + ")"
+councils.loc[councils["Recipient Name"].str.lower().str.contains(r"campbelltown"), "Recipient Name"] = councils[councils["Recipient Name"].str.lower().str.contains(r"campbelltown")]["Recipient Name"] + " (" + councils[councils["Recipient Name"].str.lower().str.contains(r"campbelltown")]["Recipient State/Territory"] + ")"
+
+
 print("Finding LGAs...")
 
 lgas = pd.read_csv("../Data/Working Data/ALGA Mail List.csv", encoding='latin1')
+
+lgas["STATE"] = lgas["STATE"].replace({"TAS": "Tas."})
+lgas.loc[lgas["COUNCIL"] == "Central Coast Council", "COUNCIL"] = lgas[lgas["COUNCIL"] == "Central Coast Council"]["COUNCIL"] + " (" + lgas[lgas['COUNCIL'] == 'Central Coast Council']['STATE'] + ")"
+lgas.loc[lgas["COUNCIL"] == "Campbelltown City Council", "COUNCIL"] = lgas[lgas["COUNCIL"] == "Campbelltown City Council"]["COUNCIL"] + " (" + lgas[lgas['COUNCIL'] == 'Campbelltown City Council']['STATE'] + ")"
+
 council_names = lgas["COUNCIL"].dropna().to_list()
 
 from thefuzz import process
 from thefuzz import fuzz
 
 def similarity(name):
-    tup = process.extractOne(name, council_names, scorer=fuzz.partial_ratio, score_cutoff=100)
-    return tup[0] if tup else None
+    tup = process.extract(name, council_names, scorer=fuzz.partial_ratio)#, score_cutoff=100)
+
+    if tup:
+        tup = [sub for sub in tup if sub[1] == 100]
+
+        if len(tup) == 1:
+            return tup[0][0]
+        else:
+            return None
+    else:
+        return None
 
 councils["Assigned LGA"] = councils["Recipient Name"].str.lower().apply(similarity)
 
@@ -40,6 +58,10 @@ def request_name(name):
 
     names_i = sorted(council_names.copy()) 
     name = name.lower()
+
+    if "central coast" in name:
+        print("Central Coast found")
+        print("Name:", name)
 
     t = 95
 
@@ -103,6 +125,8 @@ print(f"There are {missings['Recipient Name'].nunique()} missing LGAs")
 for name in missings["Recipient Name"].unique():
     councils.loc[councils["Recipient Name"] == name, "Assigned LGA"] = request_name(name)
 
+    missings = councils[councils["Assigned LGA"].isnull()]
+    print(f"There are {missings['Recipient Name'].nunique()} missing LGAs")
 #councils["Assigned LGA"] = councils.apply(lambda x: request_name(x["Recipient Name"]) if x["Assigned LGA"] is None else x["Assigned LGA"], axis=1)
 
 print("Saving data...")
