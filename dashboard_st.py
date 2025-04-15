@@ -28,8 +28,6 @@ def read_uninc():
 
 grants = read_map()
 
-st.write(len(grants), "grants to local government")
-
 uninc = read_uninc()
 
 dates = grants["Approval Date"].unique()
