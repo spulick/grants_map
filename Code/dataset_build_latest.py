@@ -18,7 +18,7 @@ grants = grants[~grants["Recipient Name"].str.contains(removal_tags, case=False,
 
 councils = grants[grants["Recipient Name"].str.contains(r"council|shire|city", case=False, na=True)]
 
-councils.loc[councils["Recipient Name"].str.lower().str.contains(r"central coast"), "Recipient Name"] = councils[councils["Recipient Name"].str.lower().str.contains(r"central coast")]["Recipient Name"] + " (" + councils[councils["Recipient Name"].str.lower().str.contains(r"central coast")]["Recipient State/Territory"] + ")"
+councils.loc[councils["Recipient Name"].str.lower.contains(r"central coast"), "Recipient Name"] = councils[councils["Recipient Name"].str.contains(r"central coast")]["Recipient Name"] + " (" + councils[councils["Recipient Name"].str.contains(r"central coast")]["Recipient State/Territory"] + ")"
 councils.loc[councils["Recipient Name"].str.lower().str.contains(r"campbelltown"), "Recipient Name"] = councils[councils["Recipient Name"].str.lower().str.contains(r"campbelltown")]["Recipient Name"] + " (" + councils[councils["Recipient Name"].str.lower().str.contains(r"campbelltown")]["Recipient State/Territory"] + ")"
 
 
