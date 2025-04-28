@@ -4,7 +4,7 @@ This repo is the home of the grants mapping project.
 
 ## Important files
 
-### ./Data/automation.sh
+```./Data/automation.sh```
 
 The main shell script that runs the weekly fetching. Best run on Mondays. Steps:
 
@@ -14,15 +14,15 @@ The main shell script that runs the weekly fetching. Best run on Mondays. Steps:
 4. cleans up the folders and removes temp files.
 5. commits and pushes changes to remote.
 
-### ./Code/asgs_names_latest.py
+```./Code/asgs_names_latest.py```
 
 Cleans up **most** naming mismatches across datasets. Best updated over time.
 
-### ./Code/dataset_build.py
+```./Code/dataset_build.py```
 
 Cleans the downloaded Excel and generates a csv file. This script contains the infamous inquirer - it forces us to have someone manually verifying councils that haven't been automatically (fuzzy-) matched. 
 
-### ./dashboard_st.py
+```./dashboard_st.py```
 
 The streamlit script for the dashboard. Streamlit config files are in ./.streamlit
 
